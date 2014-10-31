@@ -1,8 +1,8 @@
-var temperature,
-    humidity,
-    lastUpdate;
+var sensorLib = require('node-dht-sensor'),
+    temperatureBytes = new Buffer(4),
+    humidityBytes = new Buffer(4),
+    lastUpdateBytes = new Buffer(7);
 
-var sensorLib = require('node-dht-sensor');
 var sensor = {
     initialize: function () {
         //GPIO pin 23
@@ -16,9 +16,23 @@ var sensor = {
     read: function () {
         var readout = sensorLib.read();
 
-        temperature = readout.temperature.toFixed(2);
-        humidity = readout.humidity.toFixed(2);
-        lastUpdate = new Date();
+        var temperature = parseFloat(readout.temperature.toFixed(2));
+        var humidity = parseFloat(readout.humidity.toFixed(2));
+        var date = new Date();
+
+        temperatureBytes.writeFloatLE(temperature, 0);
+
+        humidityBytes.writeFloatLE(humidity, 0);
+
+        lastUpdateBytes.writeUInt16LE(date.getFullYear(), 0);
+        lastUpdateBytes.writeUInt8(date.getMonth(), 2);
+        lastUpdateBytes.writeUInt8(date.getDate(), 3);
+        lastUpdateBytes.writeUInt8(date.getHours(), 4);
+        lastUpdateBytes.writeUInt8(date.getMinutes(), 5);
+        lastUpdateBytes.writeUInt8(date.getSeconds(), 6);
+
+        //console.log(temperatureBytes, humidityBytes, lastUpdateBytes);
+        //console.log(temperature, humidity, date);
 
         setTimeout(function () {
             sensor.read();
@@ -26,31 +40,16 @@ var sensor = {
     }
 };
 
-/*mock
-var sensor = {
-    initialize: function () {
-        sensor.read();
-        return true;
-    },
-    read: function () {
-
-        temperature = 20;
-        humidity = 45;
-    }
-};
-*/
-
-
 function getHumidity() {
-    return humidity;
+    return humidityBytes;
 }
 
 function getTemperature() {
-    return temperature;
+    return temperatureBytes;
 }
 
 function getLastUpdateDate() {
-    return lastUpdate;
+    return lastUpdateBytes;
 }
 
 exports.isInitialized = function () {

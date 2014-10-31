@@ -1,0 +1,33 @@
+{
+    "name": "nodejs-ble-device",
+    "version": "0.0.1",
+    "description": "A node.js example program implementing a BLE device that measures and offers ambient temperature data",
+    "main": "device.js",
+    "engines": {
+        "node": ">=0.8"
+    },
+    "os": [
+    "linux"
+  ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/corzand/nodejs-ble-device"
+    },
+    "keywords": [
+        "BLE",
+        "Bluetooth",
+        "Bluetooth Low Energy",
+        "Bluetooth Smart",
+        "peripheral",
+        "temperature",
+        "humidity",
+        "sensor"
+  ],
+    "author": "Andrea Corzani",
+    "license": "GNU",
+    "readmeFilename": "README.md",
+    "dependencies": {
+        "bleno": "",
+        "node-dht-sensor": ""
+    }
+}

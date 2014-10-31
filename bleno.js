@@ -3,6 +3,8 @@ var util = require('util'),
     sensor = null,
     readyCallback = null;
 
+//Patches bleno weaknesses (kills opened l2cap-ble after closing)!
+require('./bleno-patch');
 
 var BlenoPrimaryService = bleno.PrimaryService;
 var BlenoCharacteristic = bleno.Characteristic;
@@ -10,18 +12,17 @@ var BlenoDescriptor = bleno.Descriptor;
 
 var TemperatureCharacteristic = function () {
     TemperatureCharacteristic.super_.call(this, {
-        uuid: '3A00fffffffffffffffffffffffffff1',
+        uuid: '3A00fffffffffffffffffffffffffff0',
         properties: ['read'],
         descriptors: [
             new BlenoDescriptor({
                 uuid: '2904',
-                value: new Buffer([0x04, 0x00, 0x2F, 0x27, 0x01, 0x00, 0x00])
+                value: new Buffer([0x14, 0x00, 0x2F, 0x27, 0x01, 0x00, 0x00])
             })
         ],
         onReadRequest: function (offset, callback) {
             var result = this.RESULT_SUCCESS;
-            var data = new Buffer(4);
-            data.writeUInt32LE(sensor.getTemperature(), 0);
+            var data = sensor.getTemperature();
 
             if (offset > data.length) {
                 result = this.RESULT_INVALID_OFFSET;
@@ -42,13 +43,12 @@ var HumidityCharacteristic = function () {
         descriptors: [
             new BlenoDescriptor({
                 uuid: '2904',
-                value: new Buffer([0x04, 0x00, 0xAD, 0x27, 0x01, 0x00, 0x00])
+                value: new Buffer([0x14, 0x00, 0xAD, 0x27, 0x01, 0x00, 0x00])
             })
         ],
         onReadRequest: function (offset, callback) {
             var result = this.RESULT_SUCCESS;
-            var data = new Buffer(4);
-            data.writeUInt32LE(sensor.getHumidity(), 0);
+            var data = sensor.getHumidity();
 
             if (offset > data.length) {
                 result = this.RESULT_INVALID_OFFSET;
@@ -68,17 +68,8 @@ var DateTimeCharacteristic = function () {
         properties: ['read'],
         onReadRequest: function (offset, callback) {
             var result = this.RESULT_SUCCESS;
-            var data = new Buffer(7);
 
-            var date = sensor.getLastUpdateDate();
-            console.log(date);
-
-            data.writeUInt16LE(date.getFullYear(), 0);
-            data.writeUInt8(date.getMonth(), 2);
-            data.writeUInt8(date.getDate(), 3);
-            data.writeUInt8(date.getHours(), 4);
-            data.writeUInt8(date.getMinutes(), 5);
-            data.writeUInt8(date.getSeconds(), 6);
+            var data = sensor.getLastUpdateDate();
 
             if (offset > data.length) {
                 result = this.RESULT_INVALID_OFFSET;
