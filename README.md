@@ -53,10 +53,11 @@ v0.10.24
 ```
 
 * Install BCM2835 from sources
+* (raspberry pi 2 requires version > 1.39)
 ```sh
-sudo wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.37.tar.gz
-tar zxvf bcm2835-1.37.tar.gz
-cd bcm2835-1.37
+sudo wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.xx.tar.gz
+tar zxvf bcm2835-1.xx.tar.gz
+cd bcm2835-1.xx
 ./configure
 make
 sudo make check
