@@ -14,6 +14,8 @@ Prerequisites
 * Open shell
 * Install blueZ 4.101 from sources
 ```sh
+sudo apt-get install libdbus-glib-1-dev
+sudo apt-get install libexpat1-dev
 wget http://www.kernel.org/pub/linux/bluetooth/bluez-4.101.tar.xz
 tar -xvf bluez-4.101.tar.xz
 cd bluez-4.101
